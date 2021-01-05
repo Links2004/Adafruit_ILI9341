@@ -1,4 +1,4 @@
-This is a library for the Adafruit ILI9341 display products
+This is a library for the Adafruit ILI9341 display products [![Build Status](https://github.com/Links2004/Adafruit_ILI9341/workflows/CI/badge.svg?branch=master)](https://github.com/Links2004/Adafruit_ILI9341/actions?query=workflow%3ACI+branch%3Amaster)
 
 This library works with the Adafruit 2.8" Touch Shield V2 (SPI)
   ----> http://www.adafruit.com/products/1651

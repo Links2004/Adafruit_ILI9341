@@ -80,6 +80,7 @@ jobs:
         if: steps.cache_all.outputs.cache-hit != 'true'
         run: |
           mkdir -p $HOME/Arduino/libraries
+          cd $HOME/Arduino/libraries
           git clone https://github.com/adafruit/Adafruit-GFX-Library
           rm -rf */.git
           rm -rf */.github
