@@ -84,30 +84,6 @@ jobs:
           rm -rf */.git
           rm -rf */.github
 
-      - name: download Adafruit-GFX-Library
-        if: steps.cache_all.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p $HOME/Arduino/libraries
-          git clone https://github.com/adafruit/Adafruit-GFX-Library
-          rm -rf */.git
-          rm -rf */.github
-
-      - name: download XPT2046
-        if: steps.cache_all.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p $HOME/Arduino/libraries
-          git clone https://github.com/Links2004/XPT2046
-          rm -rf */.git
-          rm -rf */.github
-
-      - name: download Adafruit_ILI9341
-        if: steps.cache_all.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p $HOME/Arduino/libraries
-          git clone https://github.com/Links2004/Adafruit_ILI9341
-          rm -rf */.git
-          rm -rf */.github
-
       - name: download esp8266
         if: steps.cache_all.outputs.cache-hit != 'true'
         run: |
