@@ -85,6 +85,15 @@ jobs:
           rm -rf */.git
           rm -rf */.github
 
+      - name: download Adafruit_BusIO
+        if: steps.cache_all.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p $HOME/Arduino/libraries
+          cd $HOME/Arduino/libraries
+          git clone --depth 1 https://github.com/adafruit/Adafruit_BusIO.git
+          rm -rf */.git
+          rm -rf */.github
+
       - name: download esp8266
         if: steps.cache_all.outputs.cache-hit != 'true'
         run: |
