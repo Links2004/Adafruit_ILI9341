@@ -81,7 +81,7 @@ jobs:
         run: |
           mkdir -p $HOME/Arduino/libraries
           cd $HOME/Arduino/libraries
-          git clone https://github.com/adafruit/Adafruit-GFX-Library
+          git clone --depth 1 https://github.com/adafruit/Adafruit-GFX-Library
           rm -rf */.git
           rm -rf */.github
 
