@@ -122,6 +122,7 @@ function clone_library() {
     git clone --depth 1 $url
     rm -rf */.git
     rm -rf */.github
+    rm -rf */examples
 }
 
 function hash_library_names() {
