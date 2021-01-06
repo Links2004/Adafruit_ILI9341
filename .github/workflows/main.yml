@@ -79,20 +79,14 @@ jobs:
       - name: download Adafruit-GFX-Library
         if: steps.cache_all.outputs.cache-hit != 'true'
         run: |
-          mkdir -p $HOME/Arduino/libraries
-          cd $HOME/Arduino/libraries
-          git clone --depth 1 https://github.com/adafruit/Adafruit-GFX-Library
-          rm -rf */.git
-          rm -rf */.github
+          source $GITHUB_WORKSPACE/travis/common.sh
+          clone_library https://github.com/adafruit/Adafruit-GFX-Library
 
       - name: download Adafruit_BusIO
         if: steps.cache_all.outputs.cache-hit != 'true'
         run: |
-          mkdir -p $HOME/Arduino/libraries
-          cd $HOME/Arduino/libraries
-          git clone --depth 1 https://github.com/adafruit/Adafruit_BusIO.git
-          rm -rf */.git
-          rm -rf */.github
+          source $GITHUB_WORKSPACE/travis/common.sh
+          clone_library https://github.com/adafruit/Adafruit_BusIO.git
 
       - name: download esp8266
         if: steps.cache_all.outputs.cache-hit != 'true'
