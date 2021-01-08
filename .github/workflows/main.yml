@@ -28,12 +28,6 @@ jobs:
           echo -en "::set-output name=matrix::"
           echo -en "["
 
-          get_sketches_json_matrix arduino $GITHUB_WORKSPACE/examples/esp esp8266 1.6.13 esp8266com:esp8266:generic:xtal=80
-          echo -en ","
-
-          get_sketches_json_matrix arduino $GITHUB_WORKSPACE/examples/esp esp8266 1.6.13 esp8266com:esp8266:generic:xtal=80,dbg=Serial1
-          echo -en ","
-
           get_sketches_json_matrix arduino $GITHUB_WORKSPACE/examples/esp esp8266 1.8.13 esp8266com:esp8266:generic:xtal=80,eesz=1M,FlashMode=qio,FlashFreq=80
           echo -en ","
 
@@ -48,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        IDE_VERSION: [1.8.13, 1.6.13]
+        IDE_VERSION: [ 1.8.13 ]
     env:
       IDE_VERSION: ${{ matrix.IDE_VERSION }}
 
