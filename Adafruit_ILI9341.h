@@ -23,7 +23,7 @@
  #include "WProgram.h"
 #endif
 #include <Adafruit_GFX.h>
-#ifdef ESP8266
+#if defined(ESP8266) || defined(ESP32) || defined(ESP31B)
 #include <pgmspace.h>
 #else
 #include <avr/pgmspace.h>

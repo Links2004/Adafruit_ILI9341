@@ -16,11 +16,7 @@
  ****************************************************/
 
 #include "Adafruit_ILI9341.h"
-#if defined(ESP8266) || defined(ESP32) || defined(ESP31B)
-#include <pgmspace.h>
-#else
-#include <avr/pgmspace.h>
-#endif
+
 #include <limits.h>
 #include "pins_arduino.h"
 #include "wiring_private.h"
