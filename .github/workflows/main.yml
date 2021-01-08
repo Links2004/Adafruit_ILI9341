@@ -151,6 +151,7 @@ jobs:
 
       - name: copy code
         run: |
+          mkdir -p $HOME/Arduino/libraries/
           cp -r $GITHUB_WORKSPACE $HOME/Arduino/libraries/Adafruit_ILI9341
       
       - name: config IDE
