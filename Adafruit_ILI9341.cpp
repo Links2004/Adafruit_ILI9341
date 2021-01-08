@@ -22,7 +22,7 @@
 #include "wiring_private.h"
 #include <SPI.h>
 
-#ifdef ESP8266
+#if defined(ESP8266) || defined(ESP32) || defined(ESP31B)
 #define hwSPI true
 #endif
 
@@ -32,7 +32,7 @@
 }
 
 
-#ifndef ESP8266
+#if !defined(ESP8266) && !defined(ESP32) && !defined(ESP31B)
 // Constructor when using software SPI.  All output pins are configurable.
 Adafruit_ILI9341::Adafruit_ILI9341(int8_t cs, int8_t dc, int8_t mosi,
 				   int8_t sclk, int8_t rst, int8_t miso) : Adafruit_GFX(ILI9341_TFTWIDTH, ILI9341_TFTHEIGHT) {
@@ -53,7 +53,7 @@ Adafruit_ILI9341::Adafruit_ILI9341(int8_t dc, int8_t rst) : Adafruit_GFX(ILI9341
   _dc   = dc;
   _rst  = rst;
   hwSPI = true;
-#ifdef ESP8266
+#if defined(ESP8266) || defined(ESP32) || defined(ESP31B)
   _dcMask = digitalPinToBitMask(_dc);
   _rstMask = digitalPinToBitMask(_rst);
 #else
@@ -65,28 +65,32 @@ Adafruit_ILI9341::Adafruit_ILI9341(int8_t dc, int8_t rst) : Adafruit_GFX(ILI9341
     _cs   = cs;
     _dc   = dc;
     _rst  = rst;
-  #ifdef ESP8266
+#if defined(ESP8266)
     _csMask = digitalPinToBitMask(_cs);
     _dcMask = digitalPinToBitMask(_dc);
     _rstMask = digitalPinToBitMask(_rst);
-  #else
+#elif !defined(ESP32) && !defined(ESP31B)
     hwSPI = true;
     _mosi  = _sclk = 0;
-  #endif
+#endif
   }
 #endif
 
 
-#ifdef ESP8266
+#if defined(ESP8266) 
 void Adafruit_ILI9341::spiwrite16(uint16_t c) {
     SPI.write16(c, true);
+}
+#elif defined(ESP32) || defined(ESP31B)
+void Adafruit_ILI9341::spiwrite16(uint16_t c) {
+    SPI.write16(c);
 }
 #endif
 
 void Adafruit_ILI9341::spiwrite(uint8_t c) {
 
   //Serial.print("0x"); Serial.print(c, HEX); Serial.print(", ");
-#ifndef ESP8266
+#if !defined(ESP8266) && !defined(ESP32) && !defined(ESP31B)
   if (hwSPI) {
 #endif
 #if defined (__AVR__)
@@ -95,7 +99,7 @@ void Adafruit_ILI9341::spiwrite(uint8_t c) {
     SPDR = c;
     while(!(SPSR & _BV(SPIF)));
     SPCR = backupSPCR;
-#elif defined(TEENSYDUINO) || defined(ESP8266)
+#elif defined(TEENSYDUINO) || defined(ESP8266) || defined(ESP32) || defined(ESP31B)
     SPI.write(c);
 #elif defined (__arm__)
     SPI.setClockDivider(11); // 8-ish MHz (full! speed!)
@@ -103,7 +107,7 @@ void Adafruit_ILI9341::spiwrite(uint8_t c) {
     SPI.setDataMode(SPI_MODE0);
     SPI.transfer(c);
 #endif
-#ifndef ESP8266
+#if !defined(ESP8266) && !defined(ESP32) && !defined(ESP31B)
   } else {
     // Fast SPI bitbang swiped from LPD8806 library
     for(uint8_t bit = 0x80; bit; bit >>= 1) {
@@ -124,7 +128,7 @@ void Adafruit_ILI9341::spiwrite(uint8_t c) {
 }
 
 void Adafruit_ILI9341::spiwriteBytes(uint8_t * data, uint32_t size) {
-#ifdef ESP8266
+#if defined(ESP8266) || defined(ESP32) || defined(ESP31B)
     SPI.writeBytes(data, size);
 #else
     while(size--) {
@@ -135,7 +139,7 @@ void Adafruit_ILI9341::spiwriteBytes(uint8_t * data, uint32_t size) {
 }
 
 void Adafruit_ILI9341::spiwritePattern(uint8_t * data, uint8_t size, uint32_t repeat) {
-#ifdef ESP8266
+#if defined(ESP8266) || defined(ESP32) || defined(ESP31B)
     SPI.writePattern(data, size, repeat);
 #else
     uint8_t * ptr;
@@ -156,7 +160,7 @@ inline void Adafruit_ILI9341::spiCsLow(void) {
 #ifdef ILI9341_USE_DIGITAL_WRITE
     digitalWrite(_cs, LOW);
 #else
-#ifdef ESP8266
+#if defined(ESP8266)
 #if !defined(ILI9341_USE_HW_CS) && !defined(ILI9341_USE_NO_CS)
     GPOC = _csMask;
 #endif
@@ -170,7 +174,7 @@ inline void Adafruit_ILI9341::spiCsHigh(void) {
 #ifdef ILI9341_USE_DIGITAL_WRITE
     digitalWrite(_cs, HIGH);
 #else
-#ifdef ESP8266
+#if defined(ESP8266)
 #if !defined(ILI9341_USE_HW_CS) && !defined(ILI9341_USE_NO_CS)
     GPOS = _csMask;
 #endif
@@ -184,7 +188,7 @@ inline void Adafruit_ILI9341::spiDcLow(void){
 #ifdef ILI9341_USE_DIGITAL_WRITE
     digitalWrite(_dc, LOW);
 #else
-#ifdef ESP8266
+#if defined(ESP8266)
 #ifndef USE_HW_CS
     GPOC = _dcMask;
 #endif
@@ -198,7 +202,7 @@ inline void Adafruit_ILI9341::spiDcHigh(void) {
 #ifdef ILI9341_USE_DIGITAL_WRITE
     digitalWrite(_dc, HIGH);
 #else
-#ifdef ESP8266
+#if defined(ESP8266)
     GPOS = _dcMask;
 #else
     *dcport |= dcpinmask;
@@ -259,7 +263,7 @@ uint16_t Adafruit_ILI9341::getWidth(void){
 // libraries.  Otherwise, they simply do nothing.
 #ifdef SPI_HAS_TRANSACTION
 #ifndef ILI9341_SPEED
-#ifdef ESP8266
+#if defined(ESP8266)
 SPISettings spiSettings = SPISettings(ESP8266_CLOCK, MSBFIRST, SPI_MODE0);
 #else
 SPISettings spiSettings =  SPISettings(8000000, MSBFIRST, SPI_MODE0);
@@ -324,7 +328,7 @@ void Adafruit_ILI9341::begin(void) {
 #ifndef USE_HW_CS
   pinMode(_cs, OUTPUT);
 #endif
-#ifndef ESP8266
+#if !defined(ESP8266) && !defined(ESP32) && !defined(ESP31B)
 #ifndef ILI9341_USE_DIGITAL_WRITE
   csport    = portOutputRegister(digitalPinToPort(_cs));
   cspinmask = digitalPinToBitMask(_cs);
@@ -349,13 +353,13 @@ void Adafruit_ILI9341::begin(void) {
       SPI.setClockDivider(11); // 8-ish MHz (full! speed!)
       SPI.setBitOrder(MSBFIRST);
       SPI.setDataMode(SPI_MODE0);
-#elif defined (ESP8266)
+#elif defined(ESP8266) || defined(ESP32) || defined(ESP31B)
       SPI.begin();
 #ifdef USE_HW_CS
       SPI.setHwCs(true);
 #endif
 #endif
-#ifndef ESP8266
+#if !defined(ESP8266) && !defined(ESP32) && !defined(ESP31B)
   } else {
     pinMode(_sclk, OUTPUT);
     pinMode(_mosi, OUTPUT);
@@ -492,7 +496,7 @@ void Adafruit_ILI9341::pushColor(uint16_t color) {
   spiDcHigh();
   spiCsLow();
 
-#ifdef ESP8266
+#if defined(ESP8266) || defined(ESP32) || defined(ESP31B)
   spiwrite16(color);
 #else
   spiwrite(color >> 8);
@@ -518,7 +522,7 @@ void Adafruit_ILI9341::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
     setAddrWindow_(x, y, x + 1, y + 1);
 
-#ifdef ESP8266
+#if defined(ESP8266) || defined(ESP32) || defined(ESP31B)
     spiwrite16(color);
 #else
     spiwrite(color >> 8);
@@ -693,7 +697,7 @@ uint8_t Adafruit_ILI9341::spiread(void) {
     r = SPI.transfer(0x00);
 #endif
   } else {
-#ifndef ESP8266
+#if !defined(ESP8266) && !defined(ESP32) && !defined(ESP31B)
     for (uint8_t i=0; i<8; i++) {
       digitalWrite(_sclk, LOW);
       digitalWrite(_sclk, HIGH);
@@ -728,7 +732,7 @@ uint8_t Adafruit_ILI9341::readcommand8(uint8_t c, uint8_t index) {
     spiDcHigh();
     spiwrite(0x10 + index);
 
-#ifndef ESP8266
+#if !defined(ESP8266) && !defined(ESP32) && !defined(ESP31B)
     digitalWrite(_sclk, LOW);
 #endif
 

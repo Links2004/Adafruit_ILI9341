@@ -113,15 +113,17 @@
 
 //#define ILI9341_USE_DIGITAL_WRITE
 //#define ILI9341_USE_NO_CS
-#ifdef ESP8266
+#if defined(ESP8266) || defined(ESP32) || defined(ESP31B)
 //not working
 //#define ILI9341_USE_HW_CS
 #endif
-
+#if defined(ESP32) || defined(ESP31B)
+#define ILI9341_USE_DIGITAL_WRITE
+#endif
 class Adafruit_ILI9341 : public Adafruit_GFX {
 
  public:
-#ifndef ESP8266
+#if !defined(ESP8266) && !defined(ESP32) && !defined(ESP31B)
   Adafruit_ILI9341(int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK,
 		   int8_t _RST, int8_t _MISO);
 #endif
@@ -171,7 +173,7 @@ class Adafruit_ILI9341 : public Adafruit_GFX {
   uint8_t  spiread(void);
 
 
-#ifdef ESP8266
+#if defined(ESP8266) || defined(ESP32) || defined(ESP31B)
   inline void spiwrite(uint8_t data);
   inline void spiwrite16(uint16_t data);
   inline void spiwriteBytes(uint8_t * data, uint32_t size);
@@ -192,10 +194,10 @@ class Adafruit_ILI9341 : public Adafruit_GFX {
   inline void spiDcLow(void);
 
   uint8_t  tabcolor;
-#ifndef ESP8266
+#if !defined(ESP8266) && !defined(ESP32) && !defined(ESP31B)
   boolean  hwSPI;
 #endif
-#if defined (__AVR__) || defined(TEENSYDUINO)
+#if defined (__AVR__) || defined(TEENSYDUINO) || defined(ESP32) || defined(ESP31B)
   uint8_t mySPCR;
   volatile uint8_t *mosiport, *clkport, *dcport, *rsport, *csport;
   int8_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
@@ -204,7 +206,7 @@ class Adafruit_ILI9341 : public Adafruit_GFX {
     volatile RwReg *mosiport, *clkport, *dcport, *rsport, *csport;
     uint32_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
     uint32_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
-#elif defined (ESP8266)
+#elif defined(ESP8266)
 #ifndef USE_HW_CS
     int8_t  _cs;
     uint32_t _csMask;
